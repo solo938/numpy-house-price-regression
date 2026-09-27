@@ -89,8 +89,12 @@ def fit_standardizer(X):
     
     return mean,std
 
-# Step 8 - apply_standardizer (not yet solved)
-# TODO: implement
+# Step 8 - apply_standardizer
+def apply_standardizer(X, mean, std):
+    # TODO: Return the scaled matrix (X - mean) / std via broadcasting.
+    scaled_matrix = (X - mean) / std
+
+    return scaled_matrix
 
 # Step 9 - add_bias_column (not yet solved)
 # TODO: implement
