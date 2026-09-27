@@ -295,8 +295,45 @@ def make_train_val_test(X, y, train_ratio, val_ratio, seed):
         "y_test": y_test,
     }
 
-# Step 22 - standardize_and_add_bias (not yet solved)
-# TODO: implement
+# Step 22 - standardize_and_add_bias
+import numpy as np
+
+def standardize_and_add_bias(splits):
+    X_train = splits["X_train"]
+    X_val = splits["X_val"]
+    X_test = splits["X_test"]
+
+    # Fit statistics ONLY on training features
+    mean = np.mean(X_train, axis=0)
+    std = np.std(X_train, axis=0)
+
+    # Avoid division by zero for constant features
+    std = np.where(std == 0, 1.0, std)
+
+    # Standardize all feature splits using training statistics
+    X_train_std = (X_train - mean) / std
+    X_val_std = (X_val - mean) / std
+    X_test_std = (X_test - mean) / std
+
+    # Prepend bias column
+    train_bias = np.ones((X_train_std.shape[0], 1))
+    val_bias = np.ones((X_val_std.shape[0], 1))
+    test_bias = np.ones((X_test_std.shape[0], 1))
+
+    X_train_std = np.hstack((train_bias, X_train_std))
+    X_val_std = np.hstack((val_bias, X_val_std))
+    X_test_std = np.hstack((test_bias, X_test_std))
+
+    std_splits = {
+        "X_train": X_train_std,
+        "y_train": splits["y_train"],
+        "X_val": X_val_std,
+        "y_val": splits["y_val"],
+        "X_test": X_test_std,
+        "y_test": splits["y_test"],
+    }
+
+    return std_splits, mean, std
 
 # Step 23 - evaluate_predictions (not yet solved)
 # TODO: implement
