@@ -208,8 +208,39 @@ def residual_summary(y_true, y_pred):
         'median_abs': float(np.median(np.abs(r)))
     }
 
-# Step 19 - prepare_cleaned_features (not yet solved)
-# TODO: implement
+# Step 19 - prepare_cleaned_features
+import numpy as np
+
+
+def prepare_cleaned_features(X, iqr_k=1.5):
+    X_clean = np.asarray(X, dtype=float).copy()
+
+    # 1. Impute NaNs with column means
+    for i in range(X_clean.shape[1]):
+        column = X_clean[:, i]
+
+        mean = np.nanmean(column)
+
+        # If the entire column is NaN, use 0
+        if np.isnan(mean):
+            mean = 0.0
+
+        column[np.isnan(column)] = mean
+        X_clean[:, i] = column
+
+    # 2. Compute IQR bounds AFTER imputation
+    q1 = np.percentile(X_clean, 25, axis=0)
+    q3 = np.percentile(X_clean, 75, axis=0)
+
+    iqr = q3 - q1
+
+    lower = q1 - iqr_k * iqr
+    upper = q3 + iqr_k * iqr
+
+    # 3. Clip outliers
+    X_clean = np.clip(X_clean, lower, upper)
+
+    return X_clean
 
 # Step 20 - assemble_feature_matrix (not yet solved)
 # TODO: implement
