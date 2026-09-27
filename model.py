@@ -259,8 +259,41 @@ def assemble_feature_matrix(X_num, ratio_num_idx, ratio_den_idx, cat_labels=None
 
     return X_extended
 
-# Step 21 - make_train_val_test (not yet solved)
-# TODO: implement
+# Step 21 - make_train_val_test
+import numpy as np
+
+def make_train_val_test(X, y, train_ratio, val_ratio, seed):
+    N = X.shape[0]
+
+    rng = np.random.RandomState(seed)
+
+    indices = np.arange(N)
+    rng.shuffle(indices)
+
+    train_end = int(N * train_ratio)
+    val_end = int(N * (train_ratio + val_ratio))
+
+    train_indices = indices[:train_end]
+    val_indices = indices[train_end:val_end]
+    test_indices = indices[val_end:]
+
+    X_train = X[train_indices]
+    y_train = y[train_indices]
+
+    X_val = X[val_indices]
+    y_val = y[val_indices]
+
+    X_test = X[test_indices]
+    y_test = y[test_indices]
+
+    return {
+        "X_train": X_train,
+        "y_train": y_train,
+        "X_val": X_val,
+        "y_val": y_val,
+        "X_test": X_test,
+        "y_test": y_test,
+    }
 
 # Step 22 - standardize_and_add_bias (not yet solved)
 # TODO: implement
